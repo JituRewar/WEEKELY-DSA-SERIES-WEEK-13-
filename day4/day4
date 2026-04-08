@@ -1,0 +1,78 @@
+# 📅 Week 13 - Day 4
+## 🔹 LeetCode 116 - Populating Next Right Pointers in Each Node
+
+### 🧠 Problem Summary
+You are given a **perfect binary tree** where all leaves are at the same level, and every parent has two children.
+
+Your task is to connect each node's `next` pointer to its **right-side node**. If there is no next node, set it to `NULL`.
+
+---
+
+### 🔗 Problem Link
+https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
+
+---
+
+### 💡 Approach 1: Level Order Traversal (BFS)
+- Use a queue to traverse level by level
+- Connect nodes within the same level
+
+**Time Complexity:** O(N)  
+**Space Complexity:** O(N)
+
+---
+
+### 💡 Approach 2: Optimal (Constant Space)
+- Use already established `next` pointers
+- Traverse level by level without extra space
+
+**Time Complexity:** O(N)  
+**Space Complexity:** O(1)
+
+---
+
+### 🚀 Key Insight
+Since it's a **perfect binary tree**, we can directly connect:
+- `left->next = right`
+- `right->next = next->left` (if next exists)
+
+---
+```cpp
+  class Solution {
+public:
+    Node* connect(Node* root) {
+        if(root==NULL || root->left==NULL){
+            return root;
+        }
+        queue<Node*> q;
+        q.push(root);
+        q.push(NULL);
+
+        Node* prev = NULL;
+        while(q.size()>0){
+            Node* curr = q.front();
+            q.pop();
+
+            if(curr==NULL){
+                if(q.size()==0){
+                    break;
+                }
+                q.push(NULL);
+            }
+            else{
+                if(curr->left){
+                    q.push(curr->left);
+                }
+                if(curr->right){
+                    q.push(curr->right);
+                }
+                
+                if(prev!=NULL){
+                    prev->next = curr;
+                }
+            }
+            prev = curr;
+        }
+    return root;
+    }
+};
