@@ -1,0 +1,33 @@
+LEETCODE 99
+  recover BST 
+  class Solution {
+public:
+    TreeNode* prev = NULL;
+    TreeNode* first = NULL;
+    TreeNode* second = NULL;
+
+    void findigNodes(TreeNode* root){
+        if(root==NULL) return;
+
+        //left
+        findigNodes(root->left);
+        if(prev!=NULL && prev->val > root->val){//anumy detected
+            if(first==NULL){
+                first = prev;
+            }
+            second = root;
+        }
+        prev = root;
+        //right
+        findigNodes(root->right);
+    }
+    void recoverTree(TreeNode* root) {
+         findigNodes(root);
+
+         //swaping first and second
+
+         int temp = first->val;
+         first->val = second->val;
+         second->val = temp;
+    }
+};
