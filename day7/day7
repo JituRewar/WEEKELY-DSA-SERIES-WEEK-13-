@@ -1,0 +1,64 @@
+# Week 13 - Day 7: BST Iterator (LeetCode 173)
+
+## 📌 Problem Statement
+Design an iterator over a Binary Search Tree (BST). It should support:
+
+- `next()` → returns the next smallest number
+- `hasNext()` → returns true if next smallest exists
+
+---
+
+## 🚀 Approach (Using Stack)
+
+We simulate **inorder traversal (Left → Root → Right)** using a stack.
+
+### Why inorder?
+👉 Inorder traversal of BST gives **sorted order**
+
+---
+
+## 🧠 Key Idea
+
+- Push all left nodes into stack initially
+- For `next()`:
+  - Pop top node
+  - Push all left nodes of its right subtree
+
+---
+
+## ⚡ Time Complexity
+- `next()` → Amortized **O(1)**
+- `hasNext()` → **O(1)**
+
+## 💾 Space Complexity
+- **O(H)** → Height of tree
+
+---
+
+## 🔥 Code
+  class BSTIterator {
+public:
+    stack<TreeNode*> s;
+    void storeLeft(TreeNode* root){
+        while(root!=NULL){
+            s.push(root);
+            root = root->left;
+        }
+    }
+    
+    BSTIterator(TreeNode* root) {
+        storeLeft(root);
+    }
+    
+    int next() {
+        TreeNode* ans = s.top();
+        s.pop();
+
+        storeLeft(ans->right);
+        return ans->val;
+    }
+    
+    bool hasNext() {
+        return s.size()>0;
+    }
+};
