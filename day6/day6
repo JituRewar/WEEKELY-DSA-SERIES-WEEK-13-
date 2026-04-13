@@ -1,0 +1,136 @@
+# Week 13 - Day 6: Largest BST in Binary Tree
+
+## 📌 Problem Statement
+Given a Binary Tree, find the size of the largest subtree that is also a Binary Search Tree (BST).
+
+---
+
+## 🚀 Approach
+
+We use a **bottom-up (postorder traversal)** approach.
+
+For every node, we check:
+- Left subtree info
+- Right subtree info
+
+We create a helper class `Info` that stores:
+- `min` → Minimum value in subtree
+- `max` → Maximum value in subtree
+- `sz` → Size of largest BST
+
+---
+
+## 🧠 Key Logic
+
+A subtree is a BST if:
+  
+If valid:
+- Size = left.sz + right.sz + 1
+
+If not valid:
+- Return max size of left or right subtree
+
+---
+
+## ⚡ Time Complexity
+- **O(N)** → Each node is visited once
+
+## 💾 Space Complexity
+- **O(H)** → Recursive stack (height of tree)
+
+---
+
+## 🧾 Code
+  #include <bits/stdc++.h>
+using namespace std;
+
+class Node
+{
+public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val)
+    {
+        data = val;
+        left = right = NULL;
+    }
+};
+
+Node *insert(Node *root, int val)
+{
+    if (root == NULL)
+    {
+        return new Node(val);
+    }
+
+    if (val < root->data)
+    {
+        root->left = insert(root->left, val);
+    }
+    else
+    {
+        root->right = insert(root->right, val);
+    }
+    return root;
+}
+
+// creation of binary search tree
+Node *buildBST(vector<int> arr)
+{
+    Node *root = NULL;
+    for (int val : arr)
+    {
+        root = insert(root, val);
+    }
+    return root;
+}
+
+// find size of largest BST in BT
+class Info
+{
+public:
+    int min, max, sz;
+
+    Info(int mi,int mx,int size){
+        min = mi;
+        max = mx;
+        sz = size;
+    }
+};
+
+Info helper(Node* root){
+    if(root==NULL){
+        return Info(INT_MAX,INT_MIN,0);
+    }
+
+    Info left = helper(root->left);
+    Info right = helper(root->right);
+
+    if(root->data > left.max && root->data < right.min){
+       int currMin = min(root->data,left.min);
+       int currMax = max(root->data,right.max);
+       int currsz = left.sz + right.sz + 1;
+
+       return Info(currMin,currMax,currsz);
+    }
+
+    // else case in this case the valied bst is not exist
+    return Info(INT_MIN,INT_MAX,max(left.sz,right.sz));
+}
+
+
+int largestBSTinBT(Node* root){
+Info info = helper(root);
+return info.sz; // size of max bstinbt
+}
+
+
+int main()
+{
+    vector<int> arr = {3, 2, 1, 5, 6, 4};
+    Node *root = buildBST(arr);
+    cout<<largestBSTinBT(root)<<" ";
+    return 0;
+}
